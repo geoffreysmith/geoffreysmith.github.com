@@ -111,18 +111,6 @@ article ul li li li {
 }
 
 #avatar {
-  background-image: url('/static/images/sirup.jpg');
-  background-size: cover;
-  height: 134px;
-  width: 134px;
-  display: block;
-  border-radius: 50%;
-  margin-bottom: 8px;
-  border: 2px solid #999;
-  opacity: 0.8;
-  -webkit-transition:all 500ms ease-in;
-  -moz-transition:all 500ms ease-in;
-  -o-transition:all 500ms ease-in;
 }
 
 #social li {
