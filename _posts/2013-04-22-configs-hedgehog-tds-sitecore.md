@@ -71,15 +71,19 @@ take out in a later step of the process. For individual environments, I create a
 targeting the various environments:
 
 {% highlight xml %}
-  <PropertyGroup Condition=" '$(Configuration)' == 'VML.Enhance.local' ">
+  <PropertyGroup Condition=" '$(Configuration)' == 'SampleTDSProject.local' ">
     <DebugSymbols>true</DebugSymbols>
     <RecursiveDeployAction>Ignore</RecursiveDeployAction>
-    <SitecoreDeployFolder>C:\_SITES\sosland.enhance.local\Website</SitecoreDeployFolder>
+    <SitecoreDeployFolder>C:\_SITES\sampletdsproject.local\Website</SitecoreDeployFolder>
     <SitecoreAccessGuid>8536b728-2fd4-4cb4-9861-1494fd8c4372</SitecoreAccessGuid>
-    <SitecoreWebUrl>http://local.meatpoultry.com</SitecoreWebUrl>
+    <SitecoreWebUrl>http://local.sampletdsproject.com</SitecoreWebUrl>
     <InstallSitecoreConnector>True</InstallSitecoreConnector>
     <OutputPath>.\VML.enhance.local\</OutputPath>
   </PropertyGroup>
 {% endhighlight %}
 
-For each environment, I'll setup the
+They're a variety of options surrounding the deployment of the Sitecore options. The
+[sample project](http://www.hhogdev.com/~/media/Files/Products/Team_Development/TDS-Sample.zip)
+outlines the most common options. Either build within Visual Studio or use msbuild from the cli:
+
+C:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild c:\_application\SampleTdsProject.TDS\SampleTdsProject.scproj /p:Configuration=SampleTDSProject.local
