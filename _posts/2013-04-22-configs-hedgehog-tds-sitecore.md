@@ -19,7 +19,11 @@ an essential product for any Sitecore developer. It is as close as we'll
 get to a [database migrations](http://guides.rubyonrails.org/migrations.html)
 utility for document oriented databases like Sitecore. N.B. that the data structure
 is so simple for items inside Sitecore that creating a dataprovider is a relatively
+<<<<<<< HEAD
 straight [simple task](https://github.com/pbering/SitecoreData)
+=======
+straight [simple task] (https://github.com/pbering/SitecoreData)
+>>>>>>> bfc92a44464bcb51c3ab466b5f73509473e5269d
 
 ## *.scproj, the Build and Deployment Workflow
 
