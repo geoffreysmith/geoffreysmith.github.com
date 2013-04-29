@@ -17,9 +17,9 @@ like [Customer Item Generator](https://github.com/Velir/Custom-Item-Generator) a
 no relational-object mismatch these are simply mappers to generic Sitecore objects.
 an essential product for any Sitecore developer. It is as close as we'll
 get to a [database migrations](http://guides.rubyonrails.org/migrations.html)
-utility for document oriented databases like Sitecore. (N.B. that the data structure
+utility for document oriented databases like Sitecore. N.B. that the data structure
 is so simple for items inside Sitecore that creating a dataprovider is a relatively
-straight [simple task] (https://github.com/pbering/SitecoreData) ...)
+straight [simple task](https://github.com/pbering/SitecoreData)
 
 ## *.scproj, the Build and Deployment Workflow
 
