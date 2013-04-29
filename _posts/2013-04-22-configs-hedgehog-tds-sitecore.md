@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Better sleep with a sober cannibal than a drunken TDS.
+Build and deployment with Sitecore and Hedgehog TDS
 ---
 
 One of the harder concepts to grasps for the Sitecore developer unaquainted
@@ -58,7 +58,7 @@ I prefer to keep my deploments as simple as possible and try to create a univers
     <Configuration Condition=" '$(Configuration)' == '' ">
     </Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{61236e89-492e-454f-868e-f9126572c77a}</ProjectGuid>
+    ProjectGuid>{61236e89-492e-454f-868e-f9126572c77a}</ProjectGuid>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <SourceWebProject>{2E70A40A-85A8-4A1E-9A5B-E23935372C71}|SampleTDSProject.Web\SampleTDSProject.Web.csproj</SourceWebProject>
     <SourceWebPhysicalPath>..\SampleTDSProject.Web\</SourceWebPhysicalPath>
@@ -71,15 +71,19 @@ take out in a later step of the process. For individual environments, I create a
 targeting the various environments:
 
 {% highlight xml %}
-  <PropertyGroup Condition=" '$(Configuration)' == 'VML.Enhance.local' ">
+  <PropertyGroup Condition=" '$(Configuration)' == 'SampleTDSProject.local' ">
     <DebugSymbols>true</DebugSymbols>
     <RecursiveDeployAction>Ignore</RecursiveDeployAction>
-    <SitecoreDeployFolder>C:\_SITES\sosland.enhance.local\Website</SitecoreDeployFolder>
+    <SitecoreDeployFolder>C:\_SITES\sampletdsproject.local\Website</SitecoreDeployFolder>
     <SitecoreAccessGuid>8536b728-2fd4-4cb4-9861-1494fd8c4372</SitecoreAccessGuid>
-    <SitecoreWebUrl>http://local.meatpoultry.com</SitecoreWebUrl>
+    <SitecoreWebUrl>http://local.sampletdsproject.com</SitecoreWebUrl>
     <InstallSitecoreConnector>True</InstallSitecoreConnector>
     <OutputPath>.\VML.enhance.local\</OutputPath>
   </PropertyGroup>
 {% endhighlight %}
 
-For each environment, I'll setup the
+They're a variety of options surrounding the deployment of the Sitecore options. The
+[sample project](http://www.hhogdev.com/~/media/Files/Products/Team_Development/TDS-Sample.zip)
+outlines the most common options. Either build within Visual Studio or use msbuild from the cli:
+
+C:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild c:\_application\SampleTdsProject.TDS\SampleTdsProject.scproj /p:Configuration=SampleTDSProject.local
