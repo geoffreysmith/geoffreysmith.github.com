@@ -5,10 +5,57 @@
   <id>http://blog.url.com/</id>
   <link href="http://blog.url.com/"/>
   <link href="http://blog.url.com/feed.xml" rel="self"/>
-  <updated>2013-04-15T00:00:00Z</updated>
+  <updated>2013-04-17T00:00:00Z</updated>
   <author>
     <name>Blog Author</name>
   </author>
+  <entry>
+    <title>Sitecore 6.6 MVC and Dynamic Placeholders</title>
+    <link rel="alternate" href="/sitecore-dynamic-placeholders.html"/>
+    <id>/sitecore-dynamic-placeholders.html</id>
+    <published>2013-04-17T00:00:00Z</published>
+    <updated>2013-04-17T00:00:00Z</updated>
+    <author>
+      <name>Article Author</name>
+    </author>
+    <content type="html">&lt;p&gt;Sitecore&amp;rsquo;s template processing is great and flexible, but has some severe limitations out of the box. The most 
+glaring of these is the inability for Sitecore to handle certain types of complex content types. For example,
+nearly every site I&amp;rsquo;ve encountered hash a tabbed FAQ section. This would entail adding a &amp;ldquo;tab&amp;rdquo; placeholder to a page
+and allow Page Editor to add a rendering or sublayout to this section. This works great, except tabbed content presupposes
+different content per tab. For example, we might have the following tabs:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Offices in North America&lt;/li&gt;
+&lt;li&gt;Offices in South America&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;In Sitecore I want the content author to add any number of regions if the need arises, either different contintents 
+or arbitrary regions (Offices on the East Coast), the end result is that I do not or should not know the number of tabs.
+This is fine if I want each tab to contain a very generic field such as &amp;ldquo;rich text,&amp;rdquo; which is usually not possible or 
+ideal. I want the user to add a tab, then add individual offices to that tab and not just in a big content block.&lt;/p&gt;
+
+&lt;p&gt;Out of the box, this is not possible if we do not know the number of unique tabs. The &amp;ldquo;offices&amp;rdquo; placeholder in each tab
+must be unique or Sitecore&amp;rsquo;s template processing will simply render the same content for every tab. It will find the &amp;ldquo;offices&amp;rdquo;
+key and put any renderings with &amp;ldquo;offices&amp;rdquo; as the placeholder key in that placeholder. This will not work for our use case.&lt;/p&gt;
+
+&lt;p&gt;This is where I discovered &lt;a href="http://stackoverflow.com/a/15135796/193495"&gt;Duston&amp;rsquo;s &lt;/a&gt; Stackoverflow answer
+to create placeholders on the fly. The general flow is simple:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Define a dynamic placeholder with a friendly name,  &amp;ldquo;offices.&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;The dynamic placeholder code will take the parent datasource&amp;rsquo;s GUID and and append it to the generic name&lt;/li&gt;
+&lt;li&gt;Any children in that rendering will be associated to that parent rendering.&lt;/li&gt;
+&lt;li&gt;As the placeholder id for a rendering is denormalized, there&amp;rsquo;s no restrictions or validations on what a placeholder
+must be, it does not have to be previously be defined in Sitecore.&lt;/li&gt;
+&lt;li&gt;If the parent is deleted, Sitecore retains the renderings with placeholder keys that no longer exist. They will not
+show up on the page, but they&amp;rsquo;ll live in the item&amp;rsquo;s renderings (Presentation Details) until updated or deleted manually.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;The drawbacks aren&amp;rsquo;t severe, but they are contradictory to how other items exist in Sitecore. If a parent is deleted,
+the children are removed and not left in an orphaned state. The code could be updated to update child renderings, or, preferably a
+simple script could be run on a regular basis that deals with orphaned renderings regardless of the cause.&lt;/p&gt;
+</content>
+  </entry>
   <entry>
     <title>Build and deployment with Sitecore and Hedgehog TDS</title>
     <link rel="alternate" href="/sitecore-tds.html"/>
