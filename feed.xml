@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Blog Name</title>
+  <subtitle>Blog subtitle</subtitle>
+  <id>http://blog.url.com/</id>
+  <link href="http://blog.url.com/"/>
+  <link href="http://blog.url.com/feed.xml" rel="self"/>
+  <updated>2012-01-03T00:00:00Z</updated>
+  <author>
+    <name>Blog Author</name>
+  </author>
+  <entry>
+    <title>Test Article</title>
+    <link rel="alternate" href="/test-article.html"/>
+    <id>/test-article.html</id>
+    <published>2012-01-03T00:00:00Z</published>
+    <updated>2012-01-03T00:00:00Z</updated>
+    <author>
+      <name>Article Author</name>
+    </author>
+    <content type="html">&lt;p&gt;This is an example article. You probably  want to delete it and write your own articles!&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="k"&gt;def &lt;/span&gt;&lt;span class="nf"&gt;my_cool_method&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;message&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="nb"&gt;puts&lt;/span&gt; &lt;span class="n"&gt;message&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/pre&gt;</content>
+  </entry>
+  <entry>
+    <title>Example Article</title>
+    <link rel="alternate" href="/example-article.html"/>
+    <id>/example-article.html</id>
+    <published>2012-01-01T00:00:00Z</published>
+    <updated>2012-01-01T00:00:00Z</updated>
+    <author>
+      <name>Article Author</name>
+    </author>
+    <content type="html">&lt;p&gt;This is an example article. You probably  want to delete it and write your own articles!&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="k"&gt;def &lt;/span&gt;&lt;span class="nf"&gt;my_cool_method&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;message&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="nb"&gt;puts&lt;/span&gt; &lt;span class="n"&gt;message&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/pre&gt;</content>
+  </entry>
+</feed>
