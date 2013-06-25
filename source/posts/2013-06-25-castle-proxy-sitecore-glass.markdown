@@ -4,7 +4,7 @@ date: 2013-06-25
 ---
 
 I recently came across a case where it appeared Sitecore Glass was not correctly mapping
-lazy loaded objects:
+lazy loaded objects:READMORE
 
 ```csharp
     public class Car
