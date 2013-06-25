@@ -20,23 +20,23 @@
     </author>
     <content type="html">&lt;p&gt;One of the harder concepts to grasps for the Sitecore developer unaquainted
 to working in team&amp;rsquo;s is an essential Sitecore tool, Hedgehog&amp;rsquo;s 
-&amp;lt;%= link&lt;em&gt;to &amp;lsquo;Team Development for Sitecore&amp;rsquo;, &amp;lsquo;http://www.hhogdev.com/Products/Team-Development-for-Sitecore/Overview.aspx&amp;rsquo; %&amp;gt;
+&lt;a href="http://www.hhogdev.com/Products/Team-Development-for-Sitecore/Overview.aspx"&gt;Team Development for Sitecore&lt;/a&gt;
 TDS is best described as a migrations utility, similar to ActiveRecord&amp;rsquo;s Migrations or the multitude of other migrations utilities.
 Sitecore&amp;rsquo;s data structure, with a few caveats, is a document based database. The schema
 to Sitecore&amp;rsquo;s database doesn&amp;rsquo;t change when we add new data types and there&amp;rsquo;s no relational
 constraints or hallmarks of a relational database. This is why I find calling projects
-like &amp;lt;%= link&lt;/em&gt;to &amp;lsquo;Custom Item Generator&amp;rsquo;, &amp;lsquo;https://github.com/Velir/Custom-Item-Generator&amp;rsquo; %&amp;gt; and 
-&amp;lt;%= link&lt;em&gt;to &amp;lsquo;Sitecore.Glass.Mapper&amp;rsquo;, &amp;lsquo;https://github.com/Glass-lu/Glass.Sitecore.Mapper&amp;rsquo; %&amp;gt; an ORM. There&amp;rsquo;s
+like &lt;a href="https://github.com/Velir/Custom-Item-Generator"&gt;Custom Item Generator&lt;/a&gt;, and 
+&lt;a href="https://github.com/Glass-lu/Glass.Sitecore.Mapper"&gt;Sitecore.Glass.Mapper&lt;/a&gt; an ORM. There&amp;rsquo;s
 no relational-object mismatch these are simply mappers to generic Sitecore objects.
 an essential product for any Sitecore developer. It is as close as we&amp;rsquo;ll
 get to a database migrations
 utility for document oriented databases like Sitecore. N.B. that the data structure
 is so simple for items inside Sitecore that creating a dataprovider is a relatively
-&amp;lt;%= link&lt;/em&gt;to &amp;lsquo;simple task&amp;rsquo;, &amp;lsquo;https://github.com/pbering/SitecoreData&amp;rsquo; %&amp;gt;&lt;/p&gt;
+&lt;a href="https://github.com/pbering/SitecoreData"&gt;simple task&lt;/a&gt;.&lt;/p&gt;
 
 &lt;h2&gt;*.scproj, the Build and Deployment Workflow&lt;/h2&gt;
 
-&lt;p&gt;Hedgehog created a &amp;lt;%= link_to &amp;lsquo;custom project type&amp;rsquo;, &amp;lsquo;http://msdn.microsoft.com/en-us/library/bb166376(VS.100).aspx&amp;rsquo; %&amp;gt;
+&lt;p&gt;Hedgehog created a &lt;a href="http://msdn.microsoft.com/en-us/library/bb166376(VS.100).aspx"&gt;custom project type&lt;/a&gt;
 , scproj, for managing Sitecore items from managing and building Sitecore projects. When building, this
 invokes &amp;lsquo;C:\Program Files (x86)\MSBuild\HedgehogDevelopment\SitecoreProject\v9.0\HedgehogDevelopment.SitecoreProject.targets&amp;rsquo;
 which builds the following workflow for lower environments:&lt;/p&gt;
@@ -94,7 +94,7 @@ targeting the various environments:&lt;/p&gt;
   &lt;span class="nt"&gt;&amp;lt;/PropertyGroup&amp;gt;&lt;/span&gt;
 &lt;/pre&gt;
 &lt;p&gt;They&amp;rsquo;re a variety of options surrounding the deployment of the Sitecore options. The
-&amp;lt;%= link&lt;em&gt;to &amp;lsquo;sample project&amp;rsquo;, &amp;lsquo;http://www.hhogdev.com/~/media/Files/Products/Team&lt;/em&gt;Development/TDS-Sample.zip&amp;rsquo; %&amp;gt;
+&lt;a href="http://www.hhogdev.com/~/media/Files/Products/Team_Development/TDS-Sample.zip"&gt;sample project&lt;/a&gt;
 outlines the most common options. Either build within Visual Studio or use msbuild from the cli:&lt;/p&gt;
 
 &lt;p&gt;C:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild c:_application\SampleTdsProject.TDS\SampleTdsProject.scproj /p:Configuration=SampleTDSProject.local&lt;/p&gt;
