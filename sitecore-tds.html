@@ -1,0 +1,121 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv='X-UA-Compatible' content='IE=edge;chrome=1' />
+    <link href="/stylesheets/theme.css?1372129664" media="screen" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    
+    <div class="canvas">
+      <header class="page-header">
+        <div class="header-inner">
+          <div class="logo"><a href="/">New CMS Quarterly</a></div>
+          <p>Sitecore and CMS development, Geoffrey Smith</p>
+        </div>
+      </header>
+
+      <nav>
+        <ul>
+          <li><a href="/contact.html">Contact</a></li>
+          <li><a href="/about.html">About</a></li>
+          <li><a class="brandico-github" href="http://www.github.com/geoffreysmith">GitHub</a></li>
+        </ul>
+      </nav>
+      
+      <div id="main" role="main">
+        <div class="articles">
+  <article>
+    <header>
+        <h1>Build and deployment with Sitecore and Hedgehog TDS</h1>
+        <p class="date">Apr 15, 2013</p>
+    </header>
+    <p>One of the harder concepts to grasps for the Sitecore developer unaquainted
+to working in team&rsquo;s is an essential Sitecore tool, Hedgehog&rsquo;s 
+&lt;%= link<em>to &lsquo;Team Development for Sitecore&rsquo;, &lsquo;http://www.hhogdev.com/Products/Team-Development-for-Sitecore/Overview.aspx&rsquo; %&gt;
+TDS is best described as a migrations utility, similar to ActiveRecord&rsquo;s Migrations or the multitude of other migrations utilities.
+Sitecore&rsquo;s data structure, with a few caveats, is a document based database. The schema
+to Sitecore&rsquo;s database doesn&rsquo;t change when we add new data types and there&rsquo;s no relational
+constraints or hallmarks of a relational database. This is why I find calling projects
+like &lt;%= link</em>to &lsquo;Custom Item Generator&rsquo;, &lsquo;https://github.com/Velir/Custom-Item-Generator&rsquo; %&gt; and 
+&lt;%= link<em>to &lsquo;Sitecore.Glass.Mapper&rsquo;, &lsquo;https://github.com/Glass-lu/Glass.Sitecore.Mapper&rsquo; %&gt; an ORM. There&rsquo;s
+no relational-object mismatch these are simply mappers to generic Sitecore objects.
+an essential product for any Sitecore developer. It is as close as we&rsquo;ll
+get to a database migrations
+utility for document oriented databases like Sitecore. N.B. that the data structure
+is so simple for items inside Sitecore that creating a dataprovider is a relatively
+&lt;%= link</em>to &lsquo;simple task&rsquo;, &lsquo;https://github.com/pbering/SitecoreData&rsquo; %&gt;</p>
+
+<h2>*.scproj, the Build and Deployment Workflow</h2>
+
+<p>Hedgehog created a &lt;%= link_to &lsquo;custom project type&rsquo;, &lsquo;http://msdn.microsoft.com/en-us/library/bb166376(VS.100).aspx&rsquo; %&gt;
+, scproj, for managing Sitecore items from managing and building Sitecore projects. When building, this
+invokes &lsquo;C:\Program Files (x86)\MSBuild\HedgehogDevelopment\SitecoreProject\v9.0\HedgehogDevelopment.SitecoreProject.targets&rsquo;
+which builds the following workflow for lower environments:</p>
+
+<ol>
+<li>Build and create project artifacts</li>
+<li>Perform post-build steps, such as replacing config files</li>
+<li>Install Sitecore connector (the source of which is here: C:\Program Files (x86)\Hedgehog Development\Team Development for Sitecore (VS2010)\PackageInstaller\PackageInstaller)</li>
+<li>Deploy, or deserialize the items to the database</li>
+<li>Perform any post-deploy steps</li>
+</ol>
+
+<p>For higher environments, unfortunately, system administrators generally want a more manual deployment process.
+This is the cost of working in an enterprise environment, but with a few config changes, the workflow may be
+adjusted:</p>
+
+<ol>
+<li>Build and create project artifacts</li>
+<li>Perform post-build steps</li>
+<li>Generate Sitecore package for deployment</li>
+</ol>
+
+<p>From here you can either hand off the entire Sitecore package, with code deployment, or the build artifacts and the
+*.scitems file separately.</p>
+
+<p>The only problem with the *.scproj project template is that the build, deployment and Sitecore item settings
+reside in the same file. With large content trees and multiple deployment environments, this can quickly bloat
+and become a nightmare during merges.</p>
+
+<h2>Simple config samples</h2>
+
+<p>I prefer to keep my deploments as simple as possible and try to create a universal build step for the web project:</p>
+<pre class="highlight xml">  <span class="nt">&lt;PropertyGroup&gt;</span>
+    <span class="nt">&lt;Configuration</span> <span class="na">Condition=</span><span class="s">&quot; &#39;$(Configuration)&#39; == &#39;&#39; &quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;/Configuration&gt;</span>
+    <span class="nt">&lt;Platform</span> <span class="na">Condition=</span><span class="s">&quot; &#39;$(Platform)&#39; == &#39;&#39; &quot;</span><span class="nt">&gt;</span>AnyCPU<span class="nt">&lt;/Platform&gt;</span>
+    ProjectGuid&gt;{61236e89-492e-454f-868e-f9126572c77a}<span class="nt">&lt;/ProjectGuid&gt;</span>
+    <span class="nt">&lt;TargetFrameworkVersion&gt;</span>v4.0<span class="nt">&lt;/TargetFrameworkVersion&gt;</span>
+    <span class="nt">&lt;SourceWebProject&gt;</span>{2E70A40A-85A8-4A1E-9A5B-E23935372C71}|SampleTDSProject.Web\SampleTDSProject.Web.csproj<span class="nt">&lt;/SourceWebProject&gt;</span>
+    <span class="nt">&lt;SourceWebPhysicalPath&gt;</span>..\SampleTDSProject.Web\<span class="nt">&lt;/SourceWebPhysicalPath&gt;</span>
+    <span class="nt">&lt;SourceWebVirtualPath&gt;</span>/SampleTDSProject.Web.csproj<span class="nt">&lt;/SourceWebVirtualPath&gt;</span>
+  <span class="nt">&lt;/PropertyGroup&gt;</span>
+</pre>
+<p>This will create the build artifacts for any target, and create the debug symbols which we can
+take out in a later step of the process. For individual environments, I create a property group
+targeting the various environments:</p>
+<pre class="highlight xml">  <span class="nt">&lt;PropertyGroup</span> <span class="na">Condition=</span><span class="s">&quot; &#39;$(Configuration)&#39; == &#39;SampleTDSProject.local&#39; &quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;DebugSymbols&gt;</span>true<span class="nt">&lt;/DebugSymbols&gt;</span>
+    <span class="nt">&lt;RecursiveDeployAction&gt;</span>Ignore<span class="nt">&lt;/RecursiveDeployAction&gt;</span>
+    <span class="nt">&lt;SitecoreDeployFolder&gt;</span>C:\_SITES\sampletdsproject.local\Website<span class="nt">&lt;/SitecoreDeployFolder&gt;</span>
+    <span class="nt">&lt;SitecoreAccessGuid&gt;</span>8536b728-2fd4-4cb4-9861-1494fd8c4372<span class="nt">&lt;/SitecoreAccessGuid&gt;</span>
+    <span class="nt">&lt;SitecoreWebUrl&gt;</span>http://local.sampletdsproject.com<span class="nt">&lt;/SitecoreWebUrl&gt;</span>
+    <span class="nt">&lt;InstallSitecoreConnector&gt;</span>True<span class="nt">&lt;/InstallSitecoreConnector&gt;</span>
+    <span class="nt">&lt;OutputPath&gt;</span>.\VML.enhance.local\<span class="nt">&lt;/OutputPath&gt;</span>
+  <span class="nt">&lt;/PropertyGroup&gt;</span>
+</pre>
+<p>They&rsquo;re a variety of options surrounding the deployment of the Sitecore options. The
+&lt;%= link<em>to &lsquo;sample project&rsquo;, &lsquo;http://www.hhogdev.com/~/media/Files/Products/Team</em>Development/TDS-Sample.zip&rsquo; %&gt;
+outlines the most common options. Either build within Visual Studio or use msbuild from the cli:</p>
+
+<p>C:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild c:_application\SampleTdsProject.TDS\SampleTdsProject.scproj /p:Configuration=SampleTDSProject.local</p>
+
+  </article>
+</div>
+
+      </div>
+    </div>
+    
+  </body>
+</html>

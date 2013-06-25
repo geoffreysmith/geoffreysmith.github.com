@@ -5,38 +5,99 @@
   <id>http://blog.url.com/</id>
   <link href="http://blog.url.com/"/>
   <link href="http://blog.url.com/feed.xml" rel="self"/>
-  <updated>2012-01-03T00:00:00Z</updated>
+  <updated>2013-04-15T00:00:00Z</updated>
   <author>
     <name>Blog Author</name>
   </author>
   <entry>
-    <title>Test Article</title>
-    <link rel="alternate" href="/test-article.html"/>
-    <id>/test-article.html</id>
-    <published>2012-01-03T00:00:00Z</published>
-    <updated>2012-01-03T00:00:00Z</updated>
+    <title>Build and deployment with Sitecore and Hedgehog TDS</title>
+    <link rel="alternate" href="/sitecore-tds.html"/>
+    <id>/sitecore-tds.html</id>
+    <published>2013-04-15T00:00:00Z</published>
+    <updated>2013-04-15T00:00:00Z</updated>
     <author>
       <name>Article Author</name>
     </author>
-    <content type="html">&lt;p&gt;This is an example article. You probably  want to delete it and write your own articles!&lt;/p&gt;
-&lt;pre class="highlight ruby"&gt;&lt;span class="k"&gt;def &lt;/span&gt;&lt;span class="nf"&gt;my_cool_method&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;message&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="nb"&gt;puts&lt;/span&gt; &lt;span class="n"&gt;message&lt;/span&gt;
-&lt;span class="k"&gt;end&lt;/span&gt;
-&lt;/pre&gt;</content>
-  </entry>
-  <entry>
-    <title>Example Article</title>
-    <link rel="alternate" href="/example-article.html"/>
-    <id>/example-article.html</id>
-    <published>2012-01-01T00:00:00Z</published>
-    <updated>2012-01-01T00:00:00Z</updated>
-    <author>
-      <name>Article Author</name>
-    </author>
-    <content type="html">&lt;p&gt;This is an example article. You probably  want to delete it and write your own articles!&lt;/p&gt;
-&lt;pre class="highlight ruby"&gt;&lt;span class="k"&gt;def &lt;/span&gt;&lt;span class="nf"&gt;my_cool_method&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;message&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="nb"&gt;puts&lt;/span&gt; &lt;span class="n"&gt;message&lt;/span&gt;
-&lt;span class="k"&gt;end&lt;/span&gt;
-&lt;/pre&gt;</content>
+    <content type="html">&lt;p&gt;One of the harder concepts to grasps for the Sitecore developer unaquainted
+to working in team&amp;rsquo;s is an essential Sitecore tool, Hedgehog&amp;rsquo;s 
+&amp;lt;%= link&lt;em&gt;to &amp;lsquo;Team Development for Sitecore&amp;rsquo;, &amp;lsquo;http://www.hhogdev.com/Products/Team-Development-for-Sitecore/Overview.aspx&amp;rsquo; %&amp;gt;
+TDS is best described as a migrations utility, similar to ActiveRecord&amp;rsquo;s Migrations or the multitude of other migrations utilities.
+Sitecore&amp;rsquo;s data structure, with a few caveats, is a document based database. The schema
+to Sitecore&amp;rsquo;s database doesn&amp;rsquo;t change when we add new data types and there&amp;rsquo;s no relational
+constraints or hallmarks of a relational database. This is why I find calling projects
+like &amp;lt;%= link&lt;/em&gt;to &amp;lsquo;Custom Item Generator&amp;rsquo;, &amp;lsquo;https://github.com/Velir/Custom-Item-Generator&amp;rsquo; %&amp;gt; and 
+&amp;lt;%= link&lt;em&gt;to &amp;lsquo;Sitecore.Glass.Mapper&amp;rsquo;, &amp;lsquo;https://github.com/Glass-lu/Glass.Sitecore.Mapper&amp;rsquo; %&amp;gt; an ORM. There&amp;rsquo;s
+no relational-object mismatch these are simply mappers to generic Sitecore objects.
+an essential product for any Sitecore developer. It is as close as we&amp;rsquo;ll
+get to a database migrations
+utility for document oriented databases like Sitecore. N.B. that the data structure
+is so simple for items inside Sitecore that creating a dataprovider is a relatively
+&amp;lt;%= link&lt;/em&gt;to &amp;lsquo;simple task&amp;rsquo;, &amp;lsquo;https://github.com/pbering/SitecoreData&amp;rsquo; %&amp;gt;&lt;/p&gt;
+
+&lt;h2&gt;*.scproj, the Build and Deployment Workflow&lt;/h2&gt;
+
+&lt;p&gt;Hedgehog created a &amp;lt;%= link_to &amp;lsquo;custom project type&amp;rsquo;, &amp;lsquo;http://msdn.microsoft.com/en-us/library/bb166376(VS.100).aspx&amp;rsquo; %&amp;gt;
+, scproj, for managing Sitecore items from managing and building Sitecore projects. When building, this
+invokes &amp;lsquo;C:\Program Files (x86)\MSBuild\HedgehogDevelopment\SitecoreProject\v9.0\HedgehogDevelopment.SitecoreProject.targets&amp;rsquo;
+which builds the following workflow for lower environments:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Build and create project artifacts&lt;/li&gt;
+&lt;li&gt;Perform post-build steps, such as replacing config files&lt;/li&gt;
+&lt;li&gt;Install Sitecore connector (the source of which is here: C:\Program Files (x86)\Hedgehog Development\Team Development for Sitecore (VS2010)\PackageInstaller\PackageInstaller)&lt;/li&gt;
+&lt;li&gt;Deploy, or deserialize the items to the database&lt;/li&gt;
+&lt;li&gt;Perform any post-deploy steps&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;For higher environments, unfortunately, system administrators generally want a more manual deployment process.
+This is the cost of working in an enterprise environment, but with a few config changes, the workflow may be
+adjusted:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Build and create project artifacts&lt;/li&gt;
+&lt;li&gt;Perform post-build steps&lt;/li&gt;
+&lt;li&gt;Generate Sitecore package for deployment&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;From here you can either hand off the entire Sitecore package, with code deployment, or the build artifacts and the
+*.scitems file separately.&lt;/p&gt;
+
+&lt;p&gt;The only problem with the *.scproj project template is that the build, deployment and Sitecore item settings
+reside in the same file. With large content trees and multiple deployment environments, this can quickly bloat
+and become a nightmare during merges.&lt;/p&gt;
+
+&lt;h2&gt;Simple config samples&lt;/h2&gt;
+
+&lt;p&gt;I prefer to keep my deploments as simple as possible and try to create a universal build step for the web project:&lt;/p&gt;
+&lt;pre class="highlight xml"&gt;  &lt;span class="nt"&gt;&amp;lt;PropertyGroup&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;Configuration&lt;/span&gt; &lt;span class="na"&gt;Condition=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot; &amp;#39;$(Configuration)&amp;#39; == &amp;#39;&amp;#39; &amp;quot;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;/Configuration&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;Platform&lt;/span&gt; &lt;span class="na"&gt;Condition=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot; &amp;#39;$(Platform)&amp;#39; == &amp;#39;&amp;#39; &amp;quot;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;AnyCPU&lt;span class="nt"&gt;&amp;lt;/Platform&amp;gt;&lt;/span&gt;
+    ProjectGuid&amp;gt;{61236e89-492e-454f-868e-f9126572c77a}&lt;span class="nt"&gt;&amp;lt;/ProjectGuid&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;TargetFrameworkVersion&amp;gt;&lt;/span&gt;v4.0&lt;span class="nt"&gt;&amp;lt;/TargetFrameworkVersion&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;SourceWebProject&amp;gt;&lt;/span&gt;{2E70A40A-85A8-4A1E-9A5B-E23935372C71}|SampleTDSProject.Web\SampleTDSProject.Web.csproj&lt;span class="nt"&gt;&amp;lt;/SourceWebProject&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;SourceWebPhysicalPath&amp;gt;&lt;/span&gt;..\SampleTDSProject.Web\&lt;span class="nt"&gt;&amp;lt;/SourceWebPhysicalPath&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;SourceWebVirtualPath&amp;gt;&lt;/span&gt;/SampleTDSProject.Web.csproj&lt;span class="nt"&gt;&amp;lt;/SourceWebVirtualPath&amp;gt;&lt;/span&gt;
+  &lt;span class="nt"&gt;&amp;lt;/PropertyGroup&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;This will create the build artifacts for any target, and create the debug symbols which we can
+take out in a later step of the process. For individual environments, I create a property group
+targeting the various environments:&lt;/p&gt;
+&lt;pre class="highlight xml"&gt;  &lt;span class="nt"&gt;&amp;lt;PropertyGroup&lt;/span&gt; &lt;span class="na"&gt;Condition=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot; &amp;#39;$(Configuration)&amp;#39; == &amp;#39;SampleTDSProject.local&amp;#39; &amp;quot;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;DebugSymbols&amp;gt;&lt;/span&gt;true&lt;span class="nt"&gt;&amp;lt;/DebugSymbols&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;RecursiveDeployAction&amp;gt;&lt;/span&gt;Ignore&lt;span class="nt"&gt;&amp;lt;/RecursiveDeployAction&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;SitecoreDeployFolder&amp;gt;&lt;/span&gt;C:\_SITES\sampletdsproject.local\Website&lt;span class="nt"&gt;&amp;lt;/SitecoreDeployFolder&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;SitecoreAccessGuid&amp;gt;&lt;/span&gt;8536b728-2fd4-4cb4-9861-1494fd8c4372&lt;span class="nt"&gt;&amp;lt;/SitecoreAccessGuid&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;SitecoreWebUrl&amp;gt;&lt;/span&gt;http://local.sampletdsproject.com&lt;span class="nt"&gt;&amp;lt;/SitecoreWebUrl&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;InstallSitecoreConnector&amp;gt;&lt;/span&gt;True&lt;span class="nt"&gt;&amp;lt;/InstallSitecoreConnector&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;OutputPath&amp;gt;&lt;/span&gt;.\VML.enhance.local\&lt;span class="nt"&gt;&amp;lt;/OutputPath&amp;gt;&lt;/span&gt;
+  &lt;span class="nt"&gt;&amp;lt;/PropertyGroup&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;They&amp;rsquo;re a variety of options surrounding the deployment of the Sitecore options. The
+&amp;lt;%= link&lt;em&gt;to &amp;lsquo;sample project&amp;rsquo;, &amp;lsquo;http://www.hhogdev.com/~/media/Files/Products/Team&lt;/em&gt;Development/TDS-Sample.zip&amp;rsquo; %&amp;gt;
+outlines the most common options. Either build within Visual Studio or use msbuild from the cli:&lt;/p&gt;
+
+&lt;p&gt;C:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild c:_application\SampleTdsProject.TDS\SampleTdsProject.scproj /p:Configuration=SampleTDSProject.local&lt;/p&gt;
+</content>
   </entry>
 </feed>
