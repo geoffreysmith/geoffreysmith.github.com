@@ -5,10 +5,54 @@
   <id>http://blog.url.com/</id>
   <link href="http://blog.url.com/"/>
   <link href="http://blog.url.com/feed.xml" rel="self"/>
-  <updated>2013-06-25T00:00:00Z</updated>
+  <updated>2013-07-15T00:00:00Z</updated>
   <author>
     <name>Blog Author</name>
   </author>
+  <entry>
+    <title>Adding custom languages / regions to Sitecore</title>
+    <link rel="alternate" href="/adding-regions-to-sitecore.html"/>
+    <id>/adding-regions-to-sitecore.html</id>
+    <published>2013-07-15T00:00:00Z</published>
+    <updated>2013-07-15T00:00:00Z</updated>
+    <author>
+      <name>Article Author</name>
+    </author>
+    <content type="html">&lt;p&gt;Often times, with multi-lingual sites, a company&amp;rsquo;s region is not based on geographic regions. Usually these are based on sales territories and we often find ourselves
+defining regions as &amp;ldquo;English - Southeast Asia&amp;rdquo; that need their own special languages. Sitecore builds regions off Windows&amp;#39; list of cultures, to add a new region within
+Sitecore we first need to add a region to Windows. Alex Shyba provides a great &lt;a href="http://marketplace.sitecore.net/en/Modules/Custom_Language_Registration.aspx"&gt;Custom Language Registration&lt;/a&gt;
+utility, that does the job. Unfortunately, this adds a manual step into my wonderful one-click deployment process. Anything manual adds error, so let&amp;rsquo;s do the following:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Before App_Start, check if the language or region exists on the current environment&lt;/li&gt;
+&lt;li&gt;If not, add the region&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Arguably this should be part of a build process, but I found doing this in Powershell more cumbersome than simply writing C# code. The process, however, is the same. Let&amp;rsquo;s use 
+&lt;a href="https://github.com/davidebbo/WebActivator"&gt;WebActivator&lt;/a&gt; to create a method that starts before the application spins up to do this:&lt;/p&gt;
+&lt;pre class="highlight csharp"&gt;&lt;span class="na"&gt;[assembly: WebActivatorEx.PreApplicationStartMethod(typeof(MyProject.Web.App_Start.RegisterLanguages), &amp;quot;Register&amp;quot;)]&lt;/span&gt;
+&lt;span class="k"&gt;namespace&lt;/span&gt; &lt;span class="nn"&gt;MyProject.Web.App_Start&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="k"&gt;public&lt;/span&gt; &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;RegisterLanguages&lt;/span&gt;
+    &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;public&lt;/span&gt; &lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="k"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;Register&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+        &lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;IsCultureExist&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;en-SEA&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+            &lt;span class="n"&gt;var&lt;/span&gt; &lt;span class="n"&gt;cib&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="nf"&gt;CultureAndRegionInfoBuilder&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;en-SEA&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;CultureAndRegionModifiers&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;None&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+            &lt;span class="n"&gt;cib&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;LoadDataFromCultureInfo&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="nf"&gt;CultureInfo&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;en-US&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+            &lt;span class="n"&gt;cib&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;LoadDataFromRegionInfo&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="nf"&gt;RegionInfo&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;en-US&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+            &lt;span class="n"&gt;cib&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;CultureEnglishName&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;English (Southeast Asia)&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="n"&gt;cib&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;CultureNativeName&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;English (Southeast Asia)&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="n"&gt;cib&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;RegionEnglishName&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;English (Southeast Asia)&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="n"&gt;cib&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;RegionNativeName&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;English (Southeast Asia)&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="n"&gt;cib&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;Register&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+        &lt;span class="p"&gt;}&lt;/span&gt;    
+&lt;/pre&gt;
+&lt;p&gt;That&amp;rsquo;s it! Make sure Include\LanguageDefinitions.config is updated to include the new region. This also requires the AppPool user has access to the &amp;ldquo;C:\Windows\Globalization&amp;rdquo; directory
+as Windows writes the custom culture files here.&lt;/p&gt;
+</content>
+  </entry>
   <entry>
     <title>Sitecore Glass Mapper and Castle's DynamicProxy</title>
     <link rel="alternate" href="/castle-proxy-sitecore-glass.html"/>

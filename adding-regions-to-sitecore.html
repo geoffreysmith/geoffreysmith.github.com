@@ -1,0 +1,86 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv='X-UA-Compatible' content='IE=edge;chrome=1' />
+    <link href="/stylesheets/theme.css?1372129664" media="screen" rel="stylesheet" type="text/css" />
+	<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-42025504-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+  </head>
+  <body>
+    
+    <div class="canvas">
+      <header class="page-header">
+        <div class="header-inner">
+          <div class="logo"><a href="/">New CMS Quarterly</a></div>
+          <p>Sitecore and CMS development, Geoffrey Smith</p>
+        </div>
+      </header>
+
+      <nav>
+        <ul>
+          <li><a href="/about.html">About</a></li>
+          <li><a class="brandico-github" href="http://www.github.com/geoffreysmith">GitHub</a></li>
+        </ul>
+      </nav>
+      
+      <div id="main" role="main">
+        <div class="articles">
+  <article>
+    <header>
+        <h1>Adding custom languages / regions to Sitecore</h1>
+        <p class="date">Jul 15, 2013</p>
+    </header>
+    <p>Often times, with multi-lingual sites, a company&rsquo;s region is not based on geographic regions. Usually these are based on sales territories and we often find ourselves
+defining regions as &ldquo;English - Southeast Asia&rdquo; that need their own special languages. Sitecore builds regions off Windows&#39; list of cultures, to add a new region within
+Sitecore we first need to add a region to Windows. Alex Shyba provides a great <a href="http://marketplace.sitecore.net/en/Modules/Custom_Language_Registration.aspx">Custom Language Registration</a>
+utility, that does the job. Unfortunately, this adds a manual step into my wonderful one-click deployment process. Anything manual adds error, so let&rsquo;s do the following:</p>
+
+<ul>
+<li>Before App_Start, check if the language or region exists on the current environment</li>
+<li>If not, add the region</li>
+</ul>
+
+<p>Arguably this should be part of a build process, but I found doing this in Powershell more cumbersome than simply writing C# code. The process, however, is the same. Let&rsquo;s use 
+<a href="https://github.com/davidebbo/WebActivator">WebActivator</a> to create a method that starts before the application spins up to do this:</p>
+<pre class="highlight csharp"><span class="na">[assembly: WebActivatorEx.PreApplicationStartMethod(typeof(MyProject.Web.App_Start.RegisterLanguages), &quot;Register&quot;)]</span>
+<span class="k">namespace</span> <span class="nn">MyProject.Web.App_Start</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">class</span> <span class="nc">RegisterLanguages</span>
+    <span class="p">{</span>
+        <span class="k">public</span> <span class="k">static</span> <span class="k">void</span> <span class="nf">Register</span><span class="p">()</span>
+        <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nf">IsCultureExist</span><span class="p">(</span><span class="s">&quot;en-SEA&quot;</span><span class="p">))</span> <span class="k">return</span><span class="p">;</span>
+
+            <span class="n">var</span> <span class="n">cib</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">CultureAndRegionInfoBuilder</span><span class="p">(</span><span class="s">&quot;en-SEA&quot;</span><span class="p">,</span> <span class="n">CultureAndRegionModifiers</span><span class="p">.</span><span class="n">None</span><span class="p">);</span>
+            <span class="n">cib</span><span class="p">.</span><span class="nf">LoadDataFromCultureInfo</span><span class="p">(</span><span class="k">new</span> <span class="nf">CultureInfo</span><span class="p">(</span><span class="s">&quot;en-US&quot;</span><span class="p">));</span>
+            <span class="n">cib</span><span class="p">.</span><span class="nf">LoadDataFromRegionInfo</span><span class="p">(</span><span class="k">new</span> <span class="nf">RegionInfo</span><span class="p">(</span><span class="s">&quot;en-US&quot;</span><span class="p">));</span>
+            <span class="n">cib</span><span class="p">.</span><span class="n">CultureEnglishName</span> <span class="p">=</span> <span class="s">&quot;English (Southeast Asia)&quot;</span><span class="p">;</span>
+            <span class="n">cib</span><span class="p">.</span><span class="n">CultureNativeName</span> <span class="p">=</span> <span class="s">&quot;English (Southeast Asia)&quot;</span><span class="p">;</span>
+            <span class="n">cib</span><span class="p">.</span><span class="n">RegionEnglishName</span> <span class="p">=</span> <span class="s">&quot;English (Southeast Asia)&quot;</span><span class="p">;</span>
+            <span class="n">cib</span><span class="p">.</span><span class="n">RegionNativeName</span> <span class="p">=</span> <span class="s">&quot;English (Southeast Asia)&quot;</span><span class="p">;</span>
+            <span class="n">cib</span><span class="p">.</span><span class="nf">Register</span><span class="p">();</span>
+        <span class="p">}</span>    
+</pre>
+<p>That&rsquo;s it! Make sure Include\LanguageDefinitions.config is updated to include the new region. This also requires the AppPool user has access to the &ldquo;C:\Windows\Globalization&rdquo; directory
+as Windows writes the custom culture files here.</p>
+
+  </article>
+</div>
+
+      </div>
+    </div>
+    
+  </body>
+</html>
