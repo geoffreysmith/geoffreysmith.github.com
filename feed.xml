@@ -5,14 +5,123 @@
   <id>http://blog.url.com/</id>
   <link href="http://blog.url.com/"/>
   <link href="http://blog.url.com/feed.xml" rel="self"/>
-  <updated>2013-07-15T00:00:00Z</updated>
+  <updated>2013-07-19T00:00:00Z</updated>
   <author>
     <name>Blog Author</name>
   </author>
   <entry>
+    <title>Sitecore content item organization and integration testing</title>
+    <link rel="alternate" href="/sitecore-organization.html"/>
+    <id>/sitecore-organization.html</id>
+    <published>2013-07-19T00:00:00Z</published>
+    <updated>2013-07-19T00:00:00Z</updated>
+    <author>
+      <name>Article Author</name>
+    </author>
+    <content type="html">&lt;p&gt;I&amp;rsquo;ve tried a new approach to organizing templates and content with Sitecore for my latest project and really like the lack of collision with third party
+modules and Sitecore&amp;rsquo;s standard templates. It is simple, but surprisingly effective in keeping different types of content separate. I completely stole this 
+from an open source Sitecore project and I cannot remember the name, unfortunately, so proper attribution will have to wait. This organization also lead me to 
+a unique form of integration testing, which I&amp;rsquo;ll explain towards the end:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Templates&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;For templates I&amp;rsquo;ve eschewed the &amp;ldquo;User Defined&amp;rdquo; section as I find some third party modules like to write in this directory. Instead, I broke them up into three
+separate components under &amp;ldquo;sitecore\templates(project name)\&amp;rdquo;:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Base Templates, from which all other templates derive, no content item will be based on these templates and no icon is needed.&lt;/li&gt;
+&lt;li&gt;Data Templates, for items such as renderings, metadata and content items that are not pages&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Presentation Templates, for items that will be pages&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Renderings and Media Library&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;I&amp;rsquo;ve also broke up renderings and the media library in a similar manner, using the project&amp;rsquo;s name to create a root folder. If we ever have the need for a multi-tenant
+site, we won&amp;rsquo;t have to spend time separating content out, it is already separate for us. This also makes differentiating items created by us and items created by third party
+modules easier.&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Content&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;While leaving &amp;ldquo;/sitecore/content/Home&amp;rdquo; I&amp;rsquo;ve created the following directories under the content node following &lt;a href="http://corecompetency.tohams.com/"&gt;Thomas Lin&amp;rsquo;s&lt;/a&gt; suggestion:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Metadata, similar to &amp;ldquo;Data Templates&amp;rdquo; items like Google Analytics codes and application logic (e.g., a listing of states)&lt;/li&gt;
+&lt;li&gt;Navigation, used to build the navigation elements out if we&amp;rsquo;re not using the content items themselves to build the navigation&lt;/li&gt;
+&lt;li&gt;Components, rendering items created in the Page Editor&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;This is all very simple, but provides just enough organization to really make the difference on larger projects. It does lead to several interesting scenarios since we know, especially
+for templates, renderings and placeholders, that the items in a certain folder &lt;i&gt;must&lt;/i&gt; have been created with our project: we can run automated tests to ensure Sitecore best practices
+are followed. That, for example, all presentation and data templates have icons, standard values and insert options set. Or, that no base templates are used in the content tree without being
+inherited by another template, and all templates are actually being used (and if not, delete them). Here&amp;rsquo;s an example I threw in my integration test project:&lt;/p&gt;
+&lt;pre class="highlight csharp"&gt;            &lt;span class="n"&gt;_fields&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;List&lt;/span&gt;&lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;Template&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;();&lt;/span&gt;
+
+            &lt;span class="n"&gt;var&lt;/span&gt; &lt;span class="n"&gt;defaultTemplate&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="n"&gt;TemplateManager&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;GetTemplate&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;{1930BBEB-7805-471A-A3BE-4858AC7CF696}&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;_db&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+            &lt;span class="n"&gt;var&lt;/span&gt; &lt;span class="n"&gt;item&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="n"&gt;_db&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;GetItem&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;/sitecore/templates/MyProject/Base Templates/&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+            &lt;span class="n"&gt;var&lt;/span&gt; &lt;span class="n"&gt;templateItems&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Axes&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;SelectItems&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;descendant::*[@@TemplateName=&amp;#39;Template&amp;#39;]&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+            &lt;span class="k"&gt;foreach&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TemplateItem&lt;/span&gt; &lt;span class="n"&gt;templateItem&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;templateItems&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="p"&gt;{&lt;/span&gt;
+                &lt;span class="n"&gt;_fields&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;AddRange&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;from&lt;/span&gt; &lt;span class="n"&gt;template&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;templateItem&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;BaseTemplates&lt;/span&gt;
+                                 &lt;span class="n"&gt;from&lt;/span&gt; &lt;span class="n"&gt;field&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;template&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Fields&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;Where&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="p"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;!&lt;/span&gt;&lt;span class="n"&gt;defaultTemplate&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;ContainsField&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ID&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+                                 &lt;span class="n"&gt;select&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;Template&lt;/span&gt;
+                                     &lt;span class="p"&gt;{&lt;/span&gt;
+                                         &lt;span class="n"&gt;Type&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="n"&gt;type&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                                         &lt;span class="n"&gt;Field&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="n"&gt;field&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                                         &lt;span class="n"&gt;InheritedFrom&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="n"&gt;template&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                                         &lt;span class="n"&gt;StandardValue&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="n"&gt;template&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;StandardValues&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Fields&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;field&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Name&lt;/span&gt;&lt;span class="p"&gt;].&lt;/span&gt;&lt;span class="n"&gt;Value&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                                         &lt;span class="n"&gt;TemplateName&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="n"&gt;templateItem&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                                         &lt;span class="n"&gt;Section&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="n"&gt;field&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Section&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                                         &lt;span class="n"&gt;Id&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="n"&gt;field&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ID&lt;/span&gt;
+                                     &lt;span class="p"&gt;});&lt;/span&gt;
+
+                &lt;span class="k"&gt;foreach&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;var&lt;/span&gt; &lt;span class="n"&gt;field&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;templateItem&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;OwnFields&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+                &lt;span class="p"&gt;{&lt;/span&gt;
+                    &lt;span class="n"&gt;_fields&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;Add&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;Template&lt;/span&gt;
+                        &lt;span class="p"&gt;{&lt;/span&gt;
+                            &lt;span class="n"&gt;Type&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="n"&gt;type&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                            &lt;span class="n"&gt;Field&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="n"&gt;field&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                            &lt;span class="n"&gt;InheritedFrom&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;string&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Empty&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                            &lt;span class="n"&gt;StandardValue&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="n"&gt;templateItem&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;StandardValues&lt;/span&gt; &lt;span class="p"&gt;==&lt;/span&gt; &lt;span class="k"&gt;null&lt;/span&gt;
+                                                &lt;span class="p"&gt;?&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;&amp;quot;&lt;/span&gt;
+                                                &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;templateItem&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;StandardValues&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Fields&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;field&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Name&lt;/span&gt;&lt;span class="p"&gt;].&lt;/span&gt;&lt;span class="n"&gt;Value&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                            &lt;span class="n"&gt;TemplateName&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="n"&gt;templateItem&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                            &lt;span class="n"&gt;Section&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="n"&gt;field&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Section&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                            &lt;span class="n"&gt;Id&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="n"&gt;field&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ID&lt;/span&gt;
+                        &lt;span class="p"&gt;});&lt;/span&gt;
+                &lt;span class="p"&gt;}&lt;/span&gt;
+            &lt;span class="p"&gt;}&lt;/span&gt;
+
+
+         &lt;span class="k"&gt;private&lt;/span&gt; &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Template&lt;/span&gt;
+        &lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="k"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;string&lt;/span&gt; &lt;span class="n"&gt;Type&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="k"&gt;get&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;set&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+            &lt;span class="k"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;string&lt;/span&gt; &lt;span class="n"&gt;TemplateName&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="k"&gt;get&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;set&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+            &lt;span class="k"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;string&lt;/span&gt; &lt;span class="n"&gt;InheritedFrom&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="k"&gt;get&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;set&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+            &lt;span class="k"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;string&lt;/span&gt; &lt;span class="n"&gt;Field&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="k"&gt;get&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;set&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+            &lt;span class="k"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;string&lt;/span&gt; &lt;span class="n"&gt;StandardValue&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="k"&gt;get&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;set&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+            &lt;span class="k"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;string&lt;/span&gt; &lt;span class="n"&gt;Section&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="k"&gt;get&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;set&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+            &lt;span class="k"&gt;public&lt;/span&gt; &lt;span class="n"&gt;ID&lt;/span&gt; &lt;span class="n"&gt;Id&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="k"&gt;get&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;set&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+        &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;Note that &amp;ldquo;Template&amp;rdquo; is not a Sitecore template but a stub class I created to ease testing. What I&amp;rsquo;ve done is load all the templates
+into my custom list, with just the properties I need. I can then run a variety of checks and tests without having to deal with Sitecore&amp;rsquo;s
+cumbersome classes.&lt;/p&gt;
+
+&lt;p&gt;It also makes documentation easy, all I have to do is feed the list through a CsvWriter:&lt;/p&gt;
+&lt;pre class="highlight csharp"&gt;            &lt;span class="k"&gt;using&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;var&lt;/span&gt; &lt;span class="n"&gt;csv&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="nf"&gt;CsvWriter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="nf"&gt;StreamWriter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;_Templates.csv&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;
+                &lt;span class="n"&gt;csv&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;WriteRecords&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;_fields&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/pre&gt;</content>
+  </entry>
+  <entry>
     <title>Adding custom languages / regions to Sitecore</title>
-    <link rel="alternate" href="/adding-regions-to-sitecore.html"/>
-    <id>/adding-regions-to-sitecore.html</id>
+    <link rel="alternate" href="/adding-regions-to-sitecore - Copy.html"/>
+    <id>/adding-regions-to-sitecore - Copy.html</id>
     <published>2013-07-15T00:00:00Z</published>
     <updated>2013-07-15T00:00:00Z</updated>
     <author>
