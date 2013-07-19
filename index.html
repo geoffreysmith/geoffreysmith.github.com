@@ -1,0 +1,100 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv='X-UA-Compatible' content='IE=edge;chrome=1' />
+    <link href="/stylesheets/theme.css?1372129664" media="screen" rel="stylesheet" type="text/css" />
+	<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-42025504-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+  </head>
+  <body>
+    
+    <div class="canvas">
+      <header class="page-header">
+        <div class="header-inner">
+          <div class="logo"><a href="/">New CMS Quarterly</a></div>
+          <p>Sitecore and CMS development, Geoffrey Smith</p>
+        </div>
+      </header>
+
+      <nav>
+        <ul>
+          <li><a href="/about.html">About</a></li>
+          <li><a class="brandico-github" href="http://www.github.com/geoffreysmith">GitHub</a></li>
+        </ul>
+      </nav>
+      
+      <div id="main" role="main">
+        
+<div class="articles">
+  <article>
+    <h2><a href="/sitecore-organization.html">Sitecore content item organization and integration testing</a></h2>
+    <p class="date">Jul 19, 2013</p>
+    <!-- use article.summary(250) if you have Nokogiri available to show just
+         the first 250 characters -->
+    <p>I’ve tried a new approach to organizing templates and content with Sitecore for my latest project and really like the lack of collision with third party
+modules and Sitecore’s standard templates. It is simple, but surprisingly effective in keeping different types of content separate. I completely stole this 
+from an open source Sitecore project and I cannot remember the name, unfortunately, so proper attribution will have to wait. This organization also lead me to 
+a unique form of integration...</p>
+  </article>
+  <article>
+    <h2><a href="/adding-regions-to-sitecore - Copy.html">Adding custom languages / regions to Sitecore</a></h2>
+    <p class="date">Jul 15, 2013</p>
+    <!-- use article.summary(250) if you have Nokogiri available to show just
+         the first 250 characters -->
+    <p>Often times, with multi-lingual sites, a company’s region is not based on geographic regions. Usually these are based on sales territories and we often find ourselves
+defining regions as “English - Southeast Asia” that need their own special languages. Sitecore builds regions off Windows' list of cultures, to add a new region within
+Sitecore we first need to add a region to Windows. Alex Shyba provides a great <a href="http://marketplace.sitecore.net/en/Modules/Custom_Language_Registration.aspx">Custom Language Registration</a>
+utility, that does the job. Unfortunately, this adds a...</p>
+  </article>
+  <article>
+    <h2><a href="/castle-proxy-sitecore-glass.html">Sitecore Glass Mapper and Castle's DynamicProxy</a></h2>
+    <p class="date">Jun 25, 2013</p>
+    <!-- use article.summary(250) if you have Nokogiri available to show just
+         the first 250 characters -->
+    <p>I recently came across a case where it appeared Sitecore Glass was not correctly mapping
+lazy loaded objects:
+  </article>
+  <article>
+    <h2><a href="/sitecore-dynamic-placeholders.html">Sitecore 6.6 MVC and Dynamic Placeholders</a></h2>
+    <p class="date">Apr 17, 2013</p>
+    <!-- use article.summary(250) if you have Nokogiri available to show just
+         the first 250 characters -->
+    <p>Sitecore’s template processing is great and flexible, but has some severe limitations out of the box. The most 
+glaring of these is the inability for Sitecore to handle certain types of complex content types. For example,
+nearly every site I’ve encountered hash a tabbed FAQ section. This would entail adding a “tab” placeholder to a page
+and allow Page Editor to add a rendering or sublayout to this section. This works great, except tabbed content presupposes
+different content per tab. For example...</p>
+  </article>
+  <article>
+    <h2><a href="/sitecore-tds.html">Build and deployment with Sitecore and Hedgehog TDS</a></h2>
+    <p class="date">Apr 15, 2013</p>
+    <!-- use article.summary(250) if you have Nokogiri available to show just
+         the first 250 characters -->
+    <p>One of the harder concepts to grasps for the Sitecore developer unaquainted
+to working in team’s is an essential Sitecore tool, Hedgehog’s 
+<a href="http://www.hhogdev.com/Products/Team-Development-for-Sitecore/Overview.aspx">Team Development for Sitecore</a>
+TDS is best described as a migrations utility, similar to ActiveRecord’s Migrations or the multitude of other migrations utilities.
+Sitecore’s data structure, with a few caveats, is a document based database. The schema
+to Sitecore’s database doesn’t change when we add new data types and there’s no relational
+constraints or hallmarks...</p>
+  </article>
+</div>
+
+
+      </div>
+    </div>
+    
+  </body>
+</html>
